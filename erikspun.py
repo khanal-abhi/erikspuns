@@ -6,6 +6,8 @@ import urllib
 import jinja2
 import json
 
+import email.utils as eu
+
 jinja_environment = jinja2.Environment(
 	loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
@@ -25,6 +27,7 @@ class MainPage(webapp2.RequestHandler):
 
 		else:
 			nickname = 'Anonymous'
+			email = None
 			url = users.create_login_url(self.request.uri)
 			url_link_text = 'Login'
 
@@ -39,6 +42,7 @@ class MainPage(webapp2.RequestHandler):
 
 		template_values = {
 							'puns': puns,
+							'email': email,
 							'nickname': nickname,
 							'url': url,
 							'url_link_text': url_link_text,
@@ -519,13 +523,69 @@ class UpVote(webapp2.RequestHandler):
 		template = jinja_environment.get_template('templates/alert_full.html')
 		self.response.out.write(template.render(template_values))
 
+	def post(self):
+		self.response.headers['Content-Type'] = 'application/json'
 
+		date = self.request.get('date')
+		email = self.request.get('email')
 
+		match = False
+		result = None
 
+		punlikers = db.GqlQuery("SELECT * FROM PunLiker WHERE ANCESTOR IS :1", punliker_db_key(date))
+		for each_punliker in punlikers:
+			if email == each_punliker.email:
+				match = True
+				result = {
+							'request': 'failed',
+							'reason': 'duplicate_upvote'
+				}
+				pass
+
+		if not match:
+			puns = db.GqlQuery("SELECT * FROM Pun WHERE ANCESTOR IS :1", pun_db_key())
+			success = False
+
+			for pun in puns:
+				p_date = pun.date.strftime('%Y-%m-%d %H:%M:%S.%f')
+				if date == p_date:
+
+					self.response.out.write('Success')
+
+					if pun.upvotes:
+						pun.upvotes = pun.upvotes+1
+					else:
+						pun.upvotes = 1
+
+					pun.put()
+					success = True
+					pass
+
+			if success:
+				self.response.out.write('adding upvote')
+
+				punliker = PunLiker(parent=punliker_db_key(date))
+				punliker.email = email
+				punliker.put()
+				result = {
+							'request': 'successful',
+							'reason': 'upvote_commited'
+				}
+
+			else:
+				result = {
+							'request': 'failed',
+							'reason': 'pun_unavailable'
+				}
+
+		self.response.out.write(json.dumps(result))
 
 
 
 class AUser(db.Model):
+	email = db.StringProperty()
+
+class PunLiker(db.Model):
 	email = db.StringProperty()
 
 class Pun(db.Model):
@@ -534,6 +594,9 @@ class Pun(db.Model):
 	description = db.StringProperty(multiline=True)
 	upvotes = db.IntegerProperty()
 	date = db.DateTimeProperty(auto_now_add=True)
+
+def punliker_db_key(punliker_db_name):
+	return db.Key.from_path('PunLiker', punliker_db_name or 'default_pun')
 
 def pun_db_key(pun_db_name=None):
 	return db.Key.from_path('Pun', pun_db_name or 'erikspun')

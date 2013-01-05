@@ -47,13 +47,20 @@
 					<div><h3>{{ pun.pun }}:</h3>
 						<p><blockquote>"{{ pun.description }}"</blockquote></p>
 						<p>-{{ pun.author }}</p>
-						<a href="#" class="btn btn-success">+</a>
+						<form method="post" action="upvote">
+							<input type="hidden" name="date" value="{{ pun.date }}">
+							<input type="hidden" name="email" value="{{ email }}">
+							<input type="submit" value="+" class="btn btn-success">
+						
 						&nbsp; &nbsp;
 						{% if pun.upvotes %}
 						{{ pun.upvotes }}
 						{% else %}
 						0
 						{% endif %}
+
+						</form>
+
 
 						<hr />
 					</div>
