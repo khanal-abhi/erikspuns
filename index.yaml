@@ -30,3 +30,9 @@ indexes:
   ancestor: yes
   properties:
   - name: email
+
+- kind: Pun
+  ancestor: yes
+  properties:
+  - name: upvotes
+    direction: desc

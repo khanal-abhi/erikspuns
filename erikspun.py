@@ -27,7 +27,7 @@ class MainPage(webapp2.RequestHandler):
 
 		else:
 			nickname = 'Anonymous'
-			email = None
+			email = 'invalid'
 			url = users.create_login_url(self.request.uri)
 			url_link_text = 'Login'
 
@@ -537,6 +537,11 @@ class UpVote(webapp2.RequestHandler):
 		order = self.request.get('order')
 
 		match = False
+
+		if "invalid" in email:
+			match = True
+			self.redirect('/?order='+order+'#'+date)
+
 		result = None
 
 		punlikers = db.GqlQuery("SELECT * FROM PunLiker WHERE ANCESTOR IS :1", punliker_db_key(date))
@@ -586,8 +591,10 @@ class UpVote(webapp2.RequestHandler):
 				}
 
 		if self.request.get('redirect'):
-			pass
-			self.redirect('/?order='+order+'#'+date)
+			if email == 'invalid':
+				self.redirect(users.create_login_url('/?order='+order+'#'+date))
+			else:
+				self.redirect('/?order='+order+'#'+date)
 
 		else:
 			self.response.out.write(json.dumps(result))
