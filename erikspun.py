@@ -15,6 +15,7 @@ from google.appengine.ext import db
 
 class MainPage(webapp2.RequestHandler):
 	def get(self):
+		order = self.request.get('order')
 		user = users.get_current_user()
 		if user:
 			nickname = user.nickname
@@ -27,7 +28,14 @@ class MainPage(webapp2.RequestHandler):
 			url = users.create_login_url(self.request.uri)
 			url_link_text = 'Login'
 
-		puns = db.GqlQuery("SELECT * FROM Pun WHERE ANCESTOR IS :1 ORDER BY date DESC", pun_db_key())
+		if order == "newest":
+			puns = db.GqlQuery("SELECT * FROM Pun WHERE ANCESTOR IS :1 ORDER BY date DESC", pun_db_key())
+
+		elif order == "oldest":
+			puns = db.GqlQuery("SELECT * FROM Pun WHERE ANCESTOR IS :1 ORDER BY date ASC", pun_db_key())
+
+		else:
+			puns = db.GqlQuery("SELECT * FROM Pun WHERE ANCESTOR IS :1 ORDER BY date DESC", pun_db_key())
 
 		template_values = {
 							'puns': puns,
@@ -212,8 +220,9 @@ class AddUser(webapp2.RequestHandler):
 									'url': users.create_logout_url(self.request.uri),
 									'url_link_text': 'Logout',
 									'title': 'Added the user!',
-									'error_name': 'Added the user!',
-									'error_description': 'The user has been successfully added!',
+									'alert_type': 'alert-success',
+									'alert_heading': 'Added the user!',
+									'alert_description': 'The user has been successfully added!',
 									'back': 'add_user'
 				}
 				self.response.out.write(template.render(template_values))
@@ -486,6 +495,31 @@ class AdminPagePuns(webapp2.RequestHandler):
 		else:
 			self.redirect(users.create_login_url(self.request.uri))
 
+class UpVote(webapp2.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+
+		if users.get_current_user():
+			url = users.create_logout_url(self.request.uri)
+			url_link_text = 'Logout'
+
+		else:
+			url = users.create_login_url(self.request.uri)
+			url_link_text = 'Login'
+
+		template_values = {
+							'alert_type': 'alert-danger',
+							'title': 'Page not accessible!',
+							'alert_heading': 'Page not accessible!',
+							'alert_description': 'This page is unavailable for viewing!',
+							'url': url,
+							'url_link_text': url_link_text
+		}
+
+		template = jinja_environment.get_template('templates/alert_full.html')
+		self.response.out.write(template.render(template_values))
+
+
 
 
 
@@ -518,5 +552,6 @@ app = webapp2.WSGIApplication([('/', MainPage),
 								('/post', AddPun),
 								('/add_user', AddUser),
 								('/admin_page_users', AdminPageUsers),
-								('/admin_page_puns', AdminPagePuns)],
+								('/admin_page_puns', AdminPagePuns),
+								('/upvote', UpVote)],
                               debug=True)

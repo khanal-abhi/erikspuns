@@ -4,6 +4,13 @@
 		<title>Erik's Puns: {{ title }} </title>
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+		<style type="text/css">
+			.righty
+			{
+				float: right;
+				margin-right: 25px;
+			}
+		</style>
 
 	</head>
 	<body>
@@ -28,13 +35,26 @@
 					</div>
 				</div>
 			</div>
+
+			<div>
+				<a href="/?order=newest" class="btn btn-primary righty">Newest First</a>
+				&nbsp; &nbsp;
+				<a href="/?order=oldest" class="btn btn-primary righty">Oldest First</a>
+			</div>
 			<div>
 
 				{% for pun in puns %}
 					<div><h3>{{ pun.pun }}:</h3>
 						<p><blockquote>"{{ pun.description }}"</blockquote></p>
 						<p>-{{ pun.author }}</p>
-						<p>Upvotes: {{ pun.upvotes }}</p>
+						<a href="#" class="btn btn-success">+</a>
+						&nbsp; &nbsp;
+						{% if pun.upvotes %}
+						{{ pun.upvotes }}
+						{% else %}
+						0
+						{% endif %}
+
 						<hr />
 					</div>
 				{% endfor %}
