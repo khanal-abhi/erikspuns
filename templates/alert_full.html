@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+
+	</head>
+	<body>
+		<div class="container">
+
+			<div class="hero-unit">
+				<h1>Erik's Pun,</h1>
+				<p>We never said it was going to be a good Juan.</p>
+				<a href="{{ url }}" class="btn btn-primary">{{ url_link_text }}&raquo;</a>
+			</div>
+			<div class="navbar">
+				<div class="navbar-inner">
+					<div class="container">
+						<ul class="nav">
+							<li>
+								<a href="/" class="brand">Erik's Puns</a>
+							</li>
+							<li><a href="post">Post a pun</a></li>
+							<li><a href="admin_page_users">Admin page: Users</a></li>
+							<li><a href="admin_page_puns">Admin page: Puns</a></li>
+							<li><a href="add_user">Validate Authorization</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div>
+
+			<div class="alert {{ alert_type }}">
+				<h2>{{ alert_heading }}</h2>
+				<p>{{ alert_description }}</p>
+			</div>
+			
+		</div>
+	</body>
+
+</html>

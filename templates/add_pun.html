@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Erik's Puns: {{ title }}</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+	</head>
+	<body>
+		<div class="container">
+			<div class="hero-unit">
+				<h1>Erik's Pun,</h1>
+				<p>We never said it was going to be a good Juan.</p>
+				<a href="{{ url }}" class="btn btn-primary">{{ url_link_text }}&raquo;</a>
+			</div>
+
+			<div class="navbar">
+				<div class="navbar-inner">
+					<div class="container">
+						<ul class="nav">
+							<li>
+								<a href="/" class="brand">Erik's Puns</a>
+							</li>
+							<li class="active"><a href="post">Post a pun</a></li>
+							<li><a href="admin_page_users">Admin page: Users</a></li>
+							<li><a href="admin_page_puns">Admin page: Puns</a></li>
+							<li><a href="add_user" >Validate Authorization</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div>
+				<h2>Add a pun:</h2>
+				<form method="post" action="/post">
+					<input type="hidden" name="author" value="{{ author }}">
+					<div>Pun:</div>
+					<div><input type="text" name="pun"></div>
+					<div>Description:</div>
+					<div><textarea rows="3" cols="60" name="description"></textarea></div>
+					<div><input type="submit" value="Submit Pun" class="btn btn-success"></div>
+
+				</form>
+
+			</div>
+
+		</div>
+	</body>
+
+</html>

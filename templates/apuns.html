@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Erik's Puns: {{ title }}</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+
+	</head>
+	<body>
+		<div class="container">
+			<div class="hero-unit">
+				<h1>Erik's Pun,</h1>
+				<p>We never said it was going to be a good Juan.</p>
+				<a href="{{ url }}" class="btn btn-primary">{{ url_link_text }}&raquo;</a>
+			</div>
+
+			<div class="navbar">
+				<div class="navbar-inner">
+					<div class="container">
+						<ul class="nav">
+							<li>
+								<a href="/" class="brand">Erik's Puns</a>
+							</li>
+							<li><a href="post">Post a pun</a></li>
+							<li><a href="admin_page_users" >Admin page: Users</a></li>
+							<li class="active"><a href="admin_page_puns">Admin page: Puns</a></li>
+							<li><a href="add_user">Validate Authorization</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="alert alert-danger">
+				<h3>Delete Puns:</h3>
+				<p>
+					The puns will need to re-submitted again before they re-appear!
+				</p>
+			</div>
+			
+			{% for pun in puns %}
+					<div><h3>{{ pun.pun }}:</h3>
+						<p><blockquote>"{{ pun.description }}"</blockquote></p>
+						<p>-{{ pun.author }}</p> 
+						<p>Upvotes: {{ pun.upvotes }}</p>
+						<hr />
+						<form method="post" action="admin_page_puns">
+							<input type="hidden" name="pun" value="{{ pun.pun }}">
+							<input type="hidden" name="description" value="{{ pun.description }}">
+							<div><input type="submit" value="Delete Pun" class="btn btn-danger"></div>
+						</form>
+					</div>
+				{% endfor %}
+
+		
+
+
+		</div>
+	</body>
+
+</html>

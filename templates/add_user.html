@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Erik's Puns: {{ title }}</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+
+	</head>
+	<body>
+		<div class="container">
+			<div class="hero-unit">
+				<h1>Erik's Pun,</h1>
+				<p>We never said it was going to be a good Juan.</p>
+				<a href="{{ url }}" class="btn btn-primary">{{ url_link_text }}&raquo;</a>
+			</div>
+
+			<div class="navbar">
+				<div class="navbar-inner">
+					<div class="container">
+						<ul class="nav">
+							<li>
+								<a href="/" class="brand">Erik's Puns</a>
+							</li>
+							<li><a href="post">Post a pun</a></li>
+							<li><a href="admin_page_users">Admin page: Users</a></li>
+							<li><a href="admin_page_puns">Admin page: Puns</a></li>
+							<li class="active"><a href="add_user" >Validate Authorization</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="alert alert-info">
+				<h3>Validate the user:</h3>
+				<p>
+					You need to enter the validation key that has been provided to you to validate yourself as an authorized user to add puns!
+				</p>
+			</div>
+			
+			<div class="form">
+				<form method="post" action="/add_user">
+					<div><input type="hidden" name="email" value="{{ email }}"></div>
+					<div>Enter the validation key Provided to you below:</div>
+					<div><input type="password" name="v_key"></div>
+					<div><input type="submit" value="Validate" class="btn btn-success"></div>
+				</form>
+			</div>
+
+
+		</div>
+	</body>
+
+</html>
