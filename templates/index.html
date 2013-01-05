@@ -10,6 +10,11 @@
 				float: right;
 				margin-right: 25px;
 			}
+
+			.dont
+			{
+				display: none;
+			}
 		</style>
 
 	</head>
@@ -40,10 +45,13 @@
 				<a href="/?order=newest" class="btn btn-primary righty">Newest First</a>
 				&nbsp; &nbsp;
 				<a href="/?order=oldest" class="btn btn-primary righty">Oldest First</a>
+				&nbsp; &nbsp;
+				<a href="/?order=upvotes" class="btn btn-primary righty">Most Upvotes</a>
 			</div>
 			<div>
 
 				{% for pun in puns %}
+				<a id="{{ pun.date }}"></a>
 					<div><h3>{{ pun.pun }}:</h3>
 						<p><blockquote>"{{ pun.description }}"</blockquote></p>
 						<p>-{{ pun.author }}</p>
@@ -51,6 +59,8 @@
 							<input type="hidden" name="date" value="{{ pun.date }}">
 							<input type="hidden" name="email" value="{{ email }}">
 							<input type="submit" value="+" class="btn btn-success">
+							<input type="hidden" name="redirect" value="True">
+							<input type="hidden" name="order" value="{{ order }}"> 
 						
 						&nbsp; &nbsp;
 						{% if pun.upvotes %}

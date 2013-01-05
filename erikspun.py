@@ -20,8 +20,8 @@ class MainPage(webapp2.RequestHandler):
 		order = self.request.get('order')
 		user = users.get_current_user()
 		if user:
-			nickname = user.nickname
-			email = user.email
+			nickname = user.nickname()
+			email = user.email()
 			url = users.create_logout_url(self.request.uri)
 			url_link_text = 'Logout'
 
@@ -37,6 +37,9 @@ class MainPage(webapp2.RequestHandler):
 		elif order == "oldest":
 			puns = db.GqlQuery("SELECT * FROM Pun WHERE ANCESTOR IS :1 ORDER BY date ASC", pun_db_key())
 
+		elif order == "upvotes":
+			puns = db.GqlQuery("SELECT * FROM Pun WHERE ANCESTOR IS :1 ORDER BY upvotes DESC", pun_db_key())
+
 		else:
 			puns = db.GqlQuery("SELECT * FROM Pun WHERE ANCESTOR IS :1 ORDER BY date DESC", pun_db_key())
 
@@ -46,7 +49,8 @@ class MainPage(webapp2.RequestHandler):
 							'nickname': nickname,
 							'url': url,
 							'url_link_text': url_link_text,
-							'title': 'The beginning.'
+							'title': 'The beginning.',
+							'order': order
 		}
 
 		template = jinja_environment.get_template('templates/index.html')
@@ -430,12 +434,14 @@ class AdminPagePuns(webapp2.RequestHandler):
 
 		pun = self.request.get('pun')
 		description = self.request.get('description')
+		date = self.request.get('date')
 		success = False
 
 		apuns = db.GqlQuery("SELECT * FROM Pun WHERE ANCESTOR IS :1 ORDER BY date", pun_db_key())
 
 		for apun in apuns:
-			if pun == apun.pun and description == apun.description:
+			a_date = apun.date.strftime('%Y-%m-%d %H:%M:%S.%f')
+			if date == a_date:
 				apun.delete()
 				template_values = {
 									'alert_type': 'alert-success',
@@ -528,6 +534,7 @@ class UpVote(webapp2.RequestHandler):
 
 		date = self.request.get('date')
 		email = self.request.get('email')
+		order = self.request.get('order')
 
 		match = False
 		result = None
@@ -578,7 +585,13 @@ class UpVote(webapp2.RequestHandler):
 							'reason': 'pun_unavailable'
 				}
 
-		self.response.out.write(json.dumps(result))
+		if self.request.get('redirect'):
+			pass
+			self.redirect('/?order='+order+'#'+date)
+
+		else:
+			self.response.out.write(json.dumps(result))
+
 
 
 
